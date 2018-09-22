@@ -34,6 +34,12 @@ public class Hand : MonoBehaviour {
         
     }
 
+    public void HitWhileHolding(Vector3 relativeVel)
+    {
+        Debug.Log((ushort)(500 * relativeVel.magnitude));
+        SteamVR_Controller.Input((int)trackedObj.index).TriggerHapticPulse((ushort)(5000 + 5000 * relativeVel.magnitude));
+    }
+
     private void TriggerClickedWhileHoldingObject(object sender, ClickedEventArgs e)
     {
         if(firstClick)
@@ -41,11 +47,16 @@ public class Hand : MonoBehaviour {
             firstClick = false;
             return;
         }
+
         if(attachedObj.GetComponent<SpringJoint>())
             Destroy(attachedObj.GetComponent<SpringJoint>());
+
         attachedObj.transform.SetParent(null);
         attachedObj.GetComponent<Rigidbody>().useGravity = true;
         attachedObj.GetComponent<Rigidbody>().freezeRotation = false;
+        if(attachedObj.GetComponent<GolfClub>())
+            attachedObj.GetComponent<GolfClub>().Parent = null;
+
         attachedObj = null;
         trackedController.TriggerClicked -= TriggerClickedWhileHoldingObject;
     }
@@ -53,15 +64,26 @@ public class Hand : MonoBehaviour {
     private void OnTriggerStay(Collider other)
     {
         var device = SteamVR_Controller.Input((int)trackedObj.index);
+        Debug.Log(other.name + " " + other.GetComponent<InteractableObject>());
         if (!attachedObj && 
             device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger) &&
             other.GetComponent<InteractableObject>())
         {
+            
             attachedObj = other.gameObject.transform.root.gameObject;
+
+            if(attachedObj.GetComponent<GolfClub>())
+            {
+                attachedObj.GetComponent<GolfClub>().Parent = this;
+            }
+
             attachedObj.transform.position = transform.position;
             var joint = attachedObj.AddComponent<SpringJoint>();
             //joint.breakForce = 5;
             joint.connectedBody = attachPoint;
+            joint.spring = 15;
+            joint.damper = 10;
+            joint.massScale = 3;
             attachedObj.GetComponent<Rigidbody>().useGravity = false;
             attachedObj.GetComponent<Rigidbody>().freezeRotation = true;
             attachedObj.transform.SetParent(transform);

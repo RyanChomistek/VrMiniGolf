@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Hole : MonoBehaviour {
 
+    public NextCourseSign NextCourse;
+    public List<SteamVR_LaserPointer> Pointers;
 	// Use this for initialization
 	void Start () {
 		
@@ -19,7 +22,7 @@ public class Hole : MonoBehaviour {
         Ball ball = other.GetComponent<Ball>();
         if(ball)
         {
-            Debug.Log("ball in hole!");
+            NextCourse.gameObject.SetActive(true);
         }
     }
 }

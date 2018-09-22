@@ -20,7 +20,7 @@ public class SteamVR_LaserPointer : MonoBehaviour
     public float thickness = 0.002f;
     public GameObject holder;
     public GameObject pointer;
-    bool isActive = false;
+    public bool isActive = false;
     public bool addRigidBody = false;
     public Transform reference;
     public event PointerEventHandler PointerIn;
@@ -79,6 +79,14 @@ public class SteamVR_LaserPointer : MonoBehaviour
     // Update is called once per frame
 	void Update ()
     {
+        /*
+        if(!active)
+        {
+            pointer.transform.localScale = Vector3.zero;
+            return;
+        }
+        */
+
         if (!isActive)
         {
             isActive = true;
@@ -92,6 +100,11 @@ public class SteamVR_LaserPointer : MonoBehaviour
         Ray raycast = new Ray(transform.position, transform.forward);
         RaycastHit hit;
         bool bHit = Physics.Raycast(raycast, out hit);
+        if (!bHit || hit.collider.gameObject.tag != "VRUI")
+        {
+            pointer.transform.localScale = Vector3.zero;
+            return;
+        }
 
         if(previousContact && previousContact != hit.transform)
         {
