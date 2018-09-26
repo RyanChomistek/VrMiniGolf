@@ -5,6 +5,7 @@ using UnityEngine;
 public class GolfClub : MonoBehaviour {
 
     public Hand Parent;
+    public AudioSource Audio;
 
     private bool _isWaitingForNextActualHit = false;
 
@@ -25,8 +26,8 @@ public class GolfClub : MonoBehaviour {
         if(collision.gameObject.GetComponent<Ball>() && !_isWaitingForNextActualHit)
         {
             GameManager.Instance.NumHits++;
+            Audio.Play(0);
             StartCoroutine(NextHitCoolDown());
         }
-            
     }
 }

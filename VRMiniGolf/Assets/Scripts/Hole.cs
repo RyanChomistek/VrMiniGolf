@@ -23,6 +23,7 @@ public class Hole : MonoBehaviour {
         if(ball)
         {
             NextCourse.gameObject.SetActive(true);
+            GetComponent<AudioSource>().Play();
         }
     }
 }
