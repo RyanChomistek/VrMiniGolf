@@ -27,7 +27,7 @@ public class VRUInput : MonoBehaviour
 
     private void HandleTriggerClicked(object sender, ClickedEventArgs e)
     {
-        Debug.Log("asdasd");
+        //Debug.Log("asdasd");
         if (EventSystem.current.currentSelectedGameObject != null)
         {
             ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
